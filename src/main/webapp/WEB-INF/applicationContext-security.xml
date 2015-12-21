@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:zksp="http://www.zkoss.org/2008/zkspring/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+                        http://www.zkoss.org/2008/zkspring/core http://www.zkoss.org/2008/zkspring/core/zkspring-core.xsd 
+       					http://www.zkoss.org/2008/zkspring/security http://www.zkoss.org/2008/zkspring/security/zkspring-security.xsd">
+
+
+	<global-method-security pre-post-annotations="enabled">
+	</global-method-security>
+
+	<http auto-config="true" use-expressions="true">
+		<intercept-url pattern="/login.zul" access="permitAll" />
+		<intercept-url pattern="/index.zul" access="isAuthenticated()" />
+		<intercept-url pattern="/zkau/**" access="permitAll" />
+		<form-login login-page="/login.zul"
+			authentication-failure-url="/login.zul?login_error=1" />
+
+		<session-management>
+			<!-- Impede que um usuário loge mais de uma vez na aplicação -->
+			<concurrency-control max-sessions="2"
+				error-if-maximum-exceeded="true" />
+		</session-management>
+	</http>
+
+	<authentication-manager>
+		<authentication-provider>
+			<password-encoder hash="sha" />
+			<jdbc-user-service data-source-ref="dataSource"
+				role-prefix="AUTH_"
+				users-by-username-query="SELECT LOGIN AS username, SENHA AS password, NOT INATIVO AS enable FROM usuario WHERE LOGIN=?"
+				authorities-by-username-query="SELECT u.LOGIN, a.REF FROM acao a INNER JOIN acao_perfil ap ON a.ID = ap.ACAO_ID INNER JOIN perfil p ON ap.PERFIL_ID = p.ID INNER JOIN usuario u ON P.ID = u.PERFIL_ID WHERE u.LOGIN =?" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<beans:property name="url"
+			value="jdbc:postgresql://localhost:5432/jvcrud" />
+		<beans:property name="driverClassName" value="org.postgresql.Driver" />
+		<beans:property name="username" value="admin" />
+		<beans:property name="password" value="admin" />
+	</beans:bean>
+</beans:beans>
