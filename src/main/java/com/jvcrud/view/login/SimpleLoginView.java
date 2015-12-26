@@ -1,5 +1,7 @@
 package com.jvcrud.view.login;
 
+import com.jvcrud.view.Index;
+import com.vaadin.annotations.Theme;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
@@ -14,6 +16,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
+@Theme("valo")
 public class SimpleLoginView extends CustomComponent implements View, Button.ClickListener {
 
 	private static final long serialVersionUID = -9132341019495834869L;
@@ -27,14 +30,12 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 	public SimpleLoginView() {
 		setSizeFull();
 
-		// Create the user input field
 		user = new TextField("User:");
 		user.setWidth("300px");
 		user.setRequired(true);
 		user.setInputPrompt("Your username (eg. joe.lost)");
 		user.setInvalidAllowed(false);
 
-		// Create the password input field
 		password = new PasswordField("Password:");
 		password.setWidth("300px");
 		password.addValidator(new PasswordValidator());
@@ -42,17 +43,16 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 		password.setValue("");
 		password.setNullRepresentation("");
 
-		// Create login button
 		loginButton = new Button("Login", this);
 
-		// Add both to a panel
+		
 		VerticalLayout fields = new VerticalLayout(user, password, loginButton);
 		fields.setCaption("Please login to access the application.");
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));
 		fields.setSizeUndefined();
 
-		// The view root layout
+
 		VerticalLayout viewLayout = new VerticalLayout(fields);
 		viewLayout.setSizeFull();
 		viewLayout.setComponentAlignment(fields, Alignment.MIDDLE_CENTER);
@@ -64,7 +64,6 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// focus the username field when user arrives to the login view
 		user.focus();
 	}
 
@@ -112,7 +111,7 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 			getSession().setAttribute("user", username);
 
 			// Navigate to main view
-			getUI().getNavigator().navigateTo(SimpleLoginMainView.NAME);
+			getUI().getNavigator().navigateTo(Index.NAME);
 
 		} else {
 
