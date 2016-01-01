@@ -1,37 +1,75 @@
 package com.jvcrud.view;
 
-import com.vaadin.cdi.CDIView;
+import org.vaadin.dialogs.ConfirmDialog;
+
+import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Title;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.MenuBar.MenuItem;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
-@CDIView("index")
-public class Index extends UI implements View {
+@Theme("valo")
+@Title("JVCRUD - CRUD AGILE")
+public class Index extends VerticalLayout implements View {
 
-	@Override
-	protected void init(VaadinRequest request) {
-		final VerticalLayout layout = new VerticalLayout();
-		layout.setMargin(true);
-		setContent(layout);
+	private static final long serialVersionUID = -522126154958715472L;
 
-		Button button = new Button("Click Me");
-		button.addClickListener(new Button.ClickListener() {
-			public void buttonClick(ClickEvent event) {
-				layout.addComponent(new Label("Thank you for clicking"));
-			}
+	public static final String NAME = "index";
+
+	protected MenuBar menuBar;
+	protected MenuItem mnConfig;
+	protected MenuItem mnCadastros;
+	protected MenuItem mnSobre;
+	protected MenuItem mnSair;
+
+	public Index() {
+		buildLayout();
+	}
+
+	private void buildLayout() {
+
+		setResponsive(true);
+
+		menuBar = new MenuBar();
+		menuBar.setWidth(100, Unit.PERCENTAGE);
+
+		mnConfig = menuBar.addItem("Configurações", e -> {
+			ConfirmDialog.show(getUI(), "Please Confirm:", "Are you really sure?", "Sim", "Não", f -> {
+
+				if (f.isConfirmed()) {
+					System.out.println("YES");
+				} else {
+					System.out.println("NOT");
+				}
+
+			});
+
 		});
-		layout.addComponent(button);
+
+		mnCadastros = menuBar.addItem("Cadastros", e -> {
+		});
+
+		mnSobre = menuBar.addItem("Sobre", e -> {
+			Notification.show("This is the caption",
+	                  "This is the description",
+	                  Notification.Type.WARNING_MESSAGE);
+		});
+
+		mnSair = menuBar.addItem("Sair", e -> {
+			getSession().setAttribute("user", null);
+			getUI().getNavigator().navigateTo("");
+		});
+
+		addComponent(menuBar);
+
 	}
 
 	@Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 }

@@ -1,25 +1,28 @@
-package com.jvcrud.view.login;
+package com.jvcrud.view;
 
-import com.jvcrud.view.Index;
+import com.jvcrud.view.impl.LoginViewImpl;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.UI;
 
-public class SimpleLoginUI extends UI {
+@SpringUI
+public class MyVaadinUI extends UI {
 
 	private static final long serialVersionUID = 6727212326815879953L;
 
+	@SuppressWarnings("serial")
 	@Override
 	protected void init(VaadinRequest request) {
 
-
 		new Navigator(this, this);
-		
-		getNavigator().addView(SimpleLoginView.NAME, SimpleLoginView.class);//
+
+		getNavigator().addView(LoginView.NAME, LoginViewImpl.class);//
 		getNavigator().addView(Index.NAME, Index.class);
-		
-		getNavigator().setErrorView(i -> {});
+
+		getNavigator().setErrorView(e -> {
+		});
 
 		getNavigator().addViewChangeListener(new ViewChangeListener() {
 
@@ -27,10 +30,10 @@ public class SimpleLoginUI extends UI {
 			public boolean beforeViewChange(ViewChangeEvent event) {
 
 				boolean isLoggedIn = getSession().getAttribute("user") != null;
-				boolean isLoginView = event.getNewView() instanceof SimpleLoginView;
+				boolean isLoginView = event.getNewView() instanceof LoginView;
 
 				if (!isLoggedIn && !isLoginView) {
-					getNavigator().navigateTo(SimpleLoginView.NAME);
+					getNavigator().navigateTo(LoginView.NAME);
 					return false;
 
 				} else if (isLoggedIn && isLoginView) {

@@ -1,12 +1,16 @@
-package com.jvcrud.view.login;
+package com.jvcrud.view.impl;
 
+import org.springframework.context.annotation.Scope;
+
+import com.jvcrud.presenter.LoginPresenter;
 import com.jvcrud.view.Index;
-import com.vaadin.annotations.Theme;
+import com.jvcrud.view.LoginView;
+import com.jvcrud.view.LoginViewHandler;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -16,18 +20,25 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-@Theme("valo")
-public class SimpleLoginView extends CustomComponent implements View, Button.ClickListener {
+@SpringView
+@Scope
+public class LoginViewImpl extends CustomComponent implements LoginView {
 
-	private static final long serialVersionUID = -9132341019495834869L;
+	private static final long serialVersionUID = 6833370322334533700L;
 
-	public static final String NAME = "login";
-	private final TextField user;
-	private final PasswordField password;
+	private LoginViewHandler handler;
 
-	private final Button loginButton;
+	protected TextField user;
+	protected PasswordField password;
 
-	public SimpleLoginView() {
+	protected Button loginButton;
+	
+	@Override
+	public void init() {
+		
+		handler = new LoginPresenter();
+		handler.setView(this);
+		
 		setSizeFull();
 
 		user = new TextField("User:");
@@ -45,21 +56,24 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 
 		loginButton = new Button("Login", this);
 
-		
 		VerticalLayout fields = new VerticalLayout(user, password, loginButton);
 		fields.setCaption("Please login to access the application.");
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));
 		fields.setSizeUndefined();
 
-
 		VerticalLayout viewLayout = new VerticalLayout(fields);
 		viewLayout.setSizeFull();
 		viewLayout.setComponentAlignment(fields, Alignment.MIDDLE_CENTER);
 		viewLayout.setStyleName(Reindeer.LAYOUT_BLUE);
 		setCompositionRoot(viewLayout);
-		
+
 		loginButton.setClickShortcut(KeyCode.ENTER);
+
+	}
+	
+	public LoginViewImpl() {
+		init();
 	}
 
 	@Override
@@ -68,6 +82,7 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 	}
 
 	// Validator for validating the passwords
+	@SuppressWarnings("serial")
 	private static final class PasswordValidator extends AbstractValidator<String> {
 
 		public PasswordValidator() {
@@ -76,7 +91,7 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 
 		@Override
 		protected boolean isValidValue(String value) {
-			
+
 			if (value == null) {
 				return false;
 			}
@@ -91,34 +106,25 @@ public class SimpleLoginView extends CustomComponent implements View, Button.Cli
 
 	@Override
 	public void buttonClick(ClickEvent event) {
-
-		if (!user.isValid() || !password.isValid()) {
-			return;
-		}
-
-		String username = user.getValue();
-		String password = this.password.getValue();
-
-		//
-		// Validate username and password with database here. For examples sake
-		// I use a dummy username and password.
-		//
-		boolean isValid = username.equals("admin") && password.equals("admin");
-
-		if (isValid) {
-
-			// Store the current user in the service session
-			getSession().setAttribute("user", username);
-
-			// Navigate to main view
-			getUI().getNavigator().navigateTo(Index.NAME);
-
-		} else {
-
-			// Wrong password clear the password field and refocuses it
-			this.password.setValue(null);
-			this.password.focus();
-
-		}
+		handler.login();
 	}
+
+	public TextField getUser() {
+		return user;
+	}
+
+	public PasswordField getPassword() {
+		return password;
+	}
+
+	@Override
+	public void afterSuccessfulLogin() {
+
+		// Store the current user in the service session
+		getSession().setAttribute("user", user.getValue());
+
+		// Navigate to main view
+		getUI().getNavigator().navigateTo(Index.NAME);
+	}
+
 }
