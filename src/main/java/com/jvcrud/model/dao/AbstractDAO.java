@@ -3,13 +3,11 @@ package com.jvcrud.model.dao;
 import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("rawtypes")
 @Repository
-@Lazy
 public abstract class AbstractDAO<T> extends AbstractSimpleDAO<T> implements DAO<T> {
 
 	

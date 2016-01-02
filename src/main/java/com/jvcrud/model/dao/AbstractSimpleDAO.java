@@ -10,7 +10,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.SimpleExpression;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,6 @@ import com.jvcrud.util.TypeSearchOperator;
 
 @SuppressWarnings({"unchecked","rawtypes"})
 @Repository
-@Lazy
 public abstract class AbstractSimpleDAO<T> implements SimpleDAO<T> {
 
 	protected SessionFactory sessionFactory;

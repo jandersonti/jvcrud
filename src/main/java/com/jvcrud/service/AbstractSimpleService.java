@@ -3,9 +3,11 @@ package com.jvcrud.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jvcrud.model.dao.DAO;
 
+@Service
 public abstract class AbstractSimpleService<D extends DAO<T>, T> implements SimpleService<T>{
 	
 protected D dao;
