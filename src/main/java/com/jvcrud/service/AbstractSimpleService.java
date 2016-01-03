@@ -2,7 +2,6 @@ package com.jvcrud.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jvcrud.model.dao.DAO;
@@ -12,7 +11,6 @@ public abstract class AbstractSimpleService<D extends DAO<T>, T> implements Simp
 	
 protected D dao;
 	
-	@Autowired
 	protected abstract void setDAO(D entityDAO);
 	
 	protected D getDAO(){
